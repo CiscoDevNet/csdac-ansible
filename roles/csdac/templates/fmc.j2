@@ -1,0 +1,104 @@
+{
+    "type":"fmc",
+    "label":"On-Prem Firewall Management Center",
+    "mode":"",
+    "description":"On-Prem Firewall Management Center Adapter",
+    "docker_image":"public.ecr.aws/e6e4t5f5/muster_fmc_adapter:{{ FMC_ADAPTER_TAG }}",
+    "attributes":[
+        {
+            "name":"domain",
+            "label":"Domain",
+            "description":"On-Prem FMC Domain for Mappings",
+            "required":false,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"ip",
+            "label":"IP",
+            "description":"IP of On-Prem FMC",
+            "required":true,
+            "default_value":"",
+            "type":"string",
+            "subtypes": [
+                "host"
+            ]
+        },
+        {
+            "name":"port",
+            "label":"Port",
+            "description":"Port of On-Prem FMC",
+            "required":true,
+            "default_value":"443",
+            "type":"int",
+            "subtypes": [
+                "port"
+            ]
+        },
+        {
+            "name":"user",
+            "label":"User",
+            "description":"Username to connect to On-Prem FMC",
+            "required":true,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"password",
+            "label":"Password",
+            "description":"Password to connect to On-Prem FMC",
+            "required":true,
+            "default_value":"",
+            "type":"password"
+        },
+        {
+            "name":"secondary_ip",
+            "label":"Secondary IP",
+            "description":"IP of Secondary On-Prem FMC",
+            "required":false,
+            "default_value":"",
+            "type":"string",
+            "subtypes": [
+                "host"
+            ]
+        },
+        {
+            "name":"secondary_port",
+            "label":"Secondary Port",
+            "description":"Port of Secondary On-Prem FMC",
+            "required":false,
+            "default_value":"443",
+            "type":"int",
+            "subtypes": [
+                "port"
+            ]
+        },
+        {
+            "name":"secondary_user",
+            "label":"Secondary User",
+            "description":"Username to connect to Secondary On-Prem FMC",
+            "required":false,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"secondary_password",
+            "label":"Secondary Password",
+            "description":"Password to connect to Secondary On-Prem FMC",
+            "required":false,
+            "default_value":"",
+            "type":"password"
+        },
+        {
+            "name":"ca_bundle",
+            "label":"Server Certificate",
+            "description":"CA Bundle used to validate On-Prem FMC server certificates",
+            "required":true,
+            "default_value":"",
+            "type":"text",
+            "subtypes": [
+                "ca_bundle"
+            ]
+        }
+    ]
+}

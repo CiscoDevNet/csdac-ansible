@@ -1,0 +1,80 @@
+---
+- name: "Override Python Interpeter for CentOS7"
+  set_fact:
+    my_interpreter: "/usr/bin/python2.7"
+  when:
+    - ("ansible_distribution == 'CentOS'") or ("ansible_distribution == 'RedHat'")
+    - "ansible_distribution_major_version | int == 7"
+
+#- name: Set scopeo version for RHEL 7
+#  set_fact:
+#    skopeo_package: skopeo-0.1.40
+#  when:
+#    - ("ansible_distribution == 'CentOS'") or ("ansible_distribution == 'RedHat'")
+#    - "ansible_distribution_major_version | int == 7"
+#
+#- name: Set scopeo version for RHEL 8
+#  set_fact:
+#    skopeo_package: skopeo-1.2.2
+#  when:
+#    - ("ansible_distribution == 'CentOS'") or ("ansible_distribution == 'RedHat'")
+#    - "ansible_distribution_major_version | int == 8"
+
+- name: Ensure old versions of Docker are not installed.
+  package:
+    name:
+      - docker
+      - docker-engine
+    state: absent
+  vars:
+    ansible_python_interpreter: "{{ my_interpreter }}"
+
+- name: Install packages needed for Docker
+  package:
+    update_cache: "yes"
+    name: "{{ DOCKER_PACKAGES_RHEL }}"
+    state: present
+  vars:
+    ansible_python_interpreter: "{{ my_interpreter }}"
+
+- name: Add Docker repository.
+  get_url:
+    url: "https://download.docker.com/linux/centos/docker-ce.repo"
+    dest: '/etc/yum.repos.d/docker-ce.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable additional RHEL repositories for RedHat 7
+  rhsm_repository:
+    name:
+      - rhel-7-server-rpms
+      - rhel-7-server-extras-rpms
+  when:
+    - "ansible_distribution == 'RedHat'"
+    - "ansible_distribution_major_version | int == 7"
+
+- name: Configure containerd
+  block:
+    - name: Ensure podman is absent
+      package:
+        name:
+          - podman
+          - buildah
+        state: absent
+      vars:
+        ansible_python_interpreter: "{{ my_interpreter }}"
+
+    - name: Ensure container-selinux is installed.
+      package:
+        name: container-selinux
+        state: present
+      vars:
+        ansible_python_interpreter: "{{ my_interpreter }}"
+
+    - name: Ensure containerd.io is installed.
+      package:
+        name: containerd.io
+        state: present
+      vars:
+        ansible_python_interpreter: "{{ my_interpreter }}"

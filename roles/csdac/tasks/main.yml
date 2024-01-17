@@ -1,0 +1,25 @@
+---
+- name: "Define Python Interpreter"
+  set_fact:
+    my_interpreter: "{{ ansible_python_interpreter }}"
+
+# Execute tasks for muster deployment
+- include_vars: "{{ role_path }}/vars/main.yml"
+
+- import_tasks: "{{ role_path }}/tasks/validation.yml"
+
+- import_tasks: "{{ role_path }}/tasks/journald_config.yml"
+
+- import_tasks: "{{ role_path }}/tasks/setup_RHEL.yml"
+  when: ansible_os_family == 'RedHat'
+
+- import_tasks: "{{ role_path }}/tasks/setup_Ubuntu.yml"
+  when: ansible_os_family == 'Debian'
+
+- import_tasks: "{{ role_path }}/tasks/install_docker.yml"
+
+- import_tasks: "{{ role_path }}/tasks/configure_auditd_rules_for_docker.yml"
+
+#- import_tasks: "{{ role_path }}/tasks/install_skope.yml"
+
+- import_tasks: "{{ role_path }}/tasks/run_muster_service.yml"

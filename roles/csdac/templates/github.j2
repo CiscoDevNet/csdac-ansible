@@ -1,0 +1,25 @@
+{
+    "type": "github",
+    "label": "GitHub",
+    "mode": "dyn-obj",
+    "description": "GitHub Connector",
+    "docker_image":"public.ecr.aws/e6e4t5f5/muster_github_connector:{{ GITHUB_CONNECTOR_TAG }}",
+    "attributes": [
+        {
+            "name":"pull_interval",
+            "label":"Pull Interval (sec)",
+            "description":"Time interval in seconds between data pulls",
+            "required":false,
+            "default_value":"21600",
+            "type":"int"
+        },
+        {
+            "name":"base_api_url",
+            "label":"Base API URL",
+            "description":"Github API for Meta Data",
+            "required":true,
+            "default_value":"https://api.github.com/meta",
+            "type":"string"
+        }
+    ]
+}

@@ -1,0 +1,48 @@
+{
+    "type":"o365",
+    "label":"Office 365",
+    "mode":"dyn-obj",
+    "description":"Microsoft Office 365 Connector",
+    "docker_image":"public.ecr.aws/e6e4t5f5/muster_o365_connector:{{ O365_CONNECTOR_TAG }}",
+    "attributes":[
+        {
+            "name":"pull_interval",
+            "label":"Pull interval (sec)",
+            "description":"Time interval in seconds between data pulls",
+            "required":false,
+            "default_value":"30",
+            "type":"int"
+        },
+        {
+            "name":"base_api_url",
+            "label":"Base API URL",
+            "description":"Base Microsoft Office 365 Endpoints URL",
+            "required":true,
+            "default_value":"https://endpoints.office.com",
+            "type":"string"
+        },
+        {
+            "name":"instance_name",
+            "label":"Instance name",
+            "description":"Microsoft Office 365 Instance",
+            "required":true,
+            "default_value":"Worldwide",
+            "type":"select",
+            "select_options": {
+                "Worldwide": "Worldwide",
+                "China": "China",
+                "Germany": "Germany",
+                "USGovDoD": "USGovDoD",
+                "USGovGCCHigh": "USGovGCCHigh"
+            }
+        },
+        {
+            "name":"disable_optional_ips",
+            "label":"Disable optional IPs",
+            "description":"Do not include optional IPs",
+            "required":true,
+            "default_value":"false",
+            "type":"bool"
+        }
+    ]
+}

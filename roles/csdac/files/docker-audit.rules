@@ -1,0 +1,9 @@
+# This config contains auditd rules for auditing Docker daemon and its files
+-w /etc/default/docker -k docker
+-w /etc/docker -k docker
+-w /etc/docker/daemon.json -k docker
+-w /usr/bin/containerd -k docker
+-w /usr/sbin/runc -k docker
+-w /var/lib/docker -k docker
+-w /var/run/docker.sock -k docker
+-w /lib/systemd/system/docker.service -k docker

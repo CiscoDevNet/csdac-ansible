@@ -1,0 +1,182 @@
+version: '2.4'
+
+
+networks:
+  muster-net:
+    external:
+      name: muster-net
+
+volumes:
+  muster-status:
+    external: true
+  muster-secret:
+    external: true
+  muster-etcd-data:
+    external: true
+
+
+services:
+  muster-etcd:
+    container_name: muster-etcd
+    image: public.ecr.aws/e6e4t5f5/muster_etcd:{{ ETCD_TAG }}
+    networks:
+      - muster-net
+    logging:
+      driver: journald
+      options:
+{% raw %}
+        tag: "{{.Name}}/{{.ID}}"
+{% endraw %}
+    restart: on-failure:5
+    pids_limit: 100
+    cpu_shares: 1024
+    mem_limit: 1024M
+    mem_reservation: 512M
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - CAP_NET_RAW
+    environment:
+      - ETCD_DATA_DIR=/etcd-data
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - "http_proxy="
+      - "HTTP_PROXY="
+      - "https_proxy="
+      - "HTTPS_PROXY="
+    volumes:
+      - type: volume
+        source: muster-etcd-data
+        target: /etcd-data
+
+  muster-bee:
+    container_name: muster-bee
+    image: public.ecr.aws/e6e4t5f5/muster_bee:{{ BEE_TAG }}
+    networks:
+      - muster-net
+    logging:
+      driver: journald
+      options:
+{% raw %}
+        tag: "{{.Name}}/{{.ID}}"
+{% endraw %}
+    restart: on-failure:5
+    pids_limit: 1000
+    cpu_shares: 1024
+    mem_limit: 1024M
+    mem_reservation: 512M
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - CAP_NET_RAW
+    environment:
+      - MUSTER_LOG_LEVEL=INFO
+      - "http_proxy="
+      - "HTTP_PROXY="
+      - "https_proxy="
+      - "HTTPS_PROXY="
+      - MUSTER_BEE_USES_ETCD=true
+    depends_on:
+      - muster-etcd
+
+  muster-ui-backend:
+    container_name: muster-ui-backend
+    image: public.ecr.aws/e6e4t5f5/muster_ui_backend:{{ UI_BE_TAG }}
+    networks:
+      - muster-net
+    logging:
+      driver: journald
+      options:
+{% raw %}
+        tag: "{{.Name}}/{{.ID}}"
+{% endraw %}
+    restart: on-failure:5
+    pids_limit: 100
+    cpu_shares: 1024
+    mem_limit: 512M
+    mem_reservation: 128M
+    cap_drop:
+      - CAP_NET_RAW
+    environment:
+      - MUSTER_CONFIG_PATH=/app/config
+      - MUSTER_LOG_LEVEL=INFO
+      - MUSTER_STATUS_PATH=/app/status
+      - MUSTER_SECRET_KEY_PATH=/app/secret-key/data.json
+    volumes:
+      - type: volume
+        source: muster-status
+        target: /app/status
+        read_only: false
+      - type: volume
+        source: muster-secret
+        target: /app/secret-key
+        read_only: false
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./config:/app/config"
+      - "~/.docker:/app/.docker"
+    depends_on:
+      - muster-bee
+
+  muster-ui:
+    container_name: muster-ui
+    image: public.ecr.aws/e6e4t5f5/muster_ui:{{ UI_TAG }}
+    networks:
+      - muster-net
+    logging:
+      driver: journald
+      options:
+{% raw %} 
+        tag: "{{.Name}}/{{.ID}}"
+{% endraw %}
+    restart: on-failure:5
+    pids_limit: 100
+    cpu_shares: 1024
+    mem_limit: 1024M
+    mem_reservation: 512M
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - CAP_NET_RAW
+    environment:
+      - MUSTER_ERROR_LOG_LEVEL=crit
+      - "http_proxy="
+      - "HTTP_PROXY="
+      - "https_proxy="
+      - "HTTPS_PROXY="
+    depends_on:
+      - muster-ui-backend
+
+  muster-envoy:
+    container_name: muster-envoy
+    image: public.ecr.aws/e6e4t5f5/muster_envoy:{{ ENVOY_TAG }}
+    networks:
+      - muster-net
+    logging:
+      driver: journald
+      options:
+{% raw %}
+        tag: "{{.Name}}/{{.ID}}"
+{% endraw %}
+    restart: on-failure:5
+    pids_limit: 99
+    cpu_shares: 1024
+    mem_limit: 1024M
+    mem_reservation: 512M
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - CAP_NET_RAW
+    environment:
+      - MUSTER_ERROR_LOG_LEVEL=crit
+      - "http_proxy="
+      - "HTTP_PROXY="
+      - "https_proxy="
+      - "HTTPS_PROXY="
+    depends_on:
+      - muster-ui
+    ports:
+      - 443:8443
+    volumes:
+      - "./config/certs/key.pem:/etc/envoy/certificate.key:ro"
+      - "./config/certs/cert.crt:/etc/envoy/certificate.crt:ro"
