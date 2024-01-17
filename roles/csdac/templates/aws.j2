@@ -1,0 +1,41 @@
+{
+    "type":"aws",
+    "label":"AWS",
+    "mode":"attr-list",
+    "description":"AWS Connector",
+    "docker_image":"public.ecr.aws/e6e4t5f5/muster_aws_connector:{{ AWS_CONNECTOR_TAG }}",
+    "attributes":[
+        {
+            "name":"pull_interval",
+            "label":"Pull Interval (sec)",
+            "description":"Time interval in seconds between data pulls",
+            "required":true,
+            "default_value":"30",
+            "type":"int"
+        },
+        {
+            "name":"region",
+            "label":"Region",
+            "description":"AWS Region",
+            "required":true,
+            "default_value":"us-east-1",
+            "type":"string"
+        },
+        {
+            "name":"access_key",
+            "label":"Access Key",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"secret_key",
+            "label":"Secret Key",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"password"
+        }
+    ]
+}

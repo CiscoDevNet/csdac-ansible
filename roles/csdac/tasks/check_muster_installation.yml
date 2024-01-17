@@ -1,0 +1,7 @@
+---
+- name: verify that core services are started
+  shell: "docker inspect -f '{''{.State.Status}''}' {{ container }}"
+  register: container_state
+  changed_when: (container_state.rc > 1) or (container_state.stdout != 'running')
+  failed_when: (container_state.rc > 1) or (container_state.stdout != 'running')
+  

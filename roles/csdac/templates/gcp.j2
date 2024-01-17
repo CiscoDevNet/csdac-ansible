@@ -1,0 +1,33 @@
+{
+    "type": "gcp",
+    "label": "Google Cloud",
+    "mode": "attr-list",
+    "description": "GCP Connector",
+    "docker_image":"public.ecr.aws/e6e4t5f5/muster_gcp_connector:{{ GCP_CONNECTOR_TAG }}",
+    "attributes": [
+        {
+            "name": "pull_interval",
+            "label": "Pull Interval (sec)",
+            "description": "Time interval in seconds between data pulls",
+            "required": true,
+            "default_value": "30",
+            "type": "int"
+        },
+        {
+            "name": "region",
+            "label": "GCP region",
+            "description": "Region to interface with",
+            "required": true,
+            "default_value": "us-east1",
+            "type": "string"
+        },
+        {
+            "name": "service_account",
+            "label": "Service Account",
+            "description": "JSON credentials of the account used to interface GCP",
+            "required": true,
+            "default_value": "",
+            "type": "text"
+        }
+    ]
+}

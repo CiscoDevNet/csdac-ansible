@@ -1,0 +1,383 @@
+{
+ "files": [
+  {
+   "name": ".",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "CHANGELOG.rst",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f84b1278eb692660d3a4de34c4cde450941ff3fff55dd4cbb229c403b9783b26",
+   "format": 1
+  },
+  {
+   "name": "LICENSE",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ef979d4e126fec6273fa2a9cf364cc34860c2ca666dec3517ba8c0ddffc97215",
+   "format": 1
+  },
+  {
+   "name": "logs",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "logs/.keep",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "format": 1
+  },
+  {
+   "name": "logs/csdac.log",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "format": 1
+  },
+  {
+   "name": "default_playbook.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "7472a24ed124306bdf145c7e0ed80b529cefafa75f994290e66177dfcf1c7813",
+   "format": 1
+  },
+  {
+   "name": "README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "09dbda2d27baccb2b19b3323b3d4bffd83b0e00ba1c108ffe2af957bb43a86a4",
+   "format": 1
+  },
+  {
+   "name": "galaxy.yml.bak",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "5e17a8770060e1c605bb5431584d88a4aad566ea1fbb2705dc9b5cf84e14b970",
+   "format": 1
+  },
+  {
+   "name": "ansible.cfg",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "bf4436e666a934b92108972e0da4f22de6986d8f4f5ff97b5b62a8997a97cf00",
+   "format": 1
+  },
+  {
+   "name": "meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "meta/runtime.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c03f11d23823bc02cb96a7d367906c9dab8fa9aeba23be4ba0263018359130e5",
+   "format": 1
+  },
+  {
+   "name": "roles",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/csdac",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/check_muster_installation.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "5d4d1cb58ad1ebe8b5216a9930f64d29ed6c6d6ed1d4ac808c9422a4162ea9a4",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/test.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "50009824e4a5b7030eccaf89704dc4416e7f83844bdd55439f8e8c2fa501fc3a",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/setup_Ubuntu.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "eca26fe921cdb5c64c300dd9fda5b5ce447bd6879a6e5503856f3ae430aebf41",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "9a397798f174af452cfe8dfed1878e8a5ada5009508a47de8f298d78f4b9f570",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/run_muster_service.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "885673c9f197ebb8c697f573d63cbdae15084ff5303f3cc37041c415443d6961",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/setup_RHEL.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "81bf45cd40a46e714bbf18b47faddbed37633007e3676adb3af8f4ecbaaa65df",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/journald_config.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f2a3b9cafd979afcb46836684dd1ac917a06e0c3b4b84223ab2431580ea85573",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/configure_auditd_rules_for_docker.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "1d41988ed1431e03bf24949c81b50e23001f00c50d081219ad0dc245a0219d30",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/install_docker.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "3f7019d5224d9dc328a4381ad6493f5e2d3be6ae4fa2d74c8991f31fcff0adab",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/install_skope.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "33ea270bf1b7344eaa33486676e0fefb36b718961a51a62b35382bd954bb0ba2",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/tasks/validation.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "44ec3d833549ab80a3c5dfbb38a9f4d4c06aecbcdc73fa84b45eabfa143c08f6",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/vars",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/vars/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "9e5539da4a6e49af5f4706ef3c8c1d961663da3429eb4104c1a7364dccdfbd20",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/handlers",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/handlers/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "3a3f60f9809e0fd7a0c7099e1cd9399fc46adf3432470b501e86f135b853c0d2",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/docker-daemon-proxy.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "b3f44db2979b9afec66ab1f32d4c557403208d7fe8bdf4db433b7a9147a72cd1",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/vcenter.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6e3bf17df6e68b4fe74229ed8c421a0f14feac97a5c8a84b4273811af88cf0e7",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/webex.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a024c5fd2d96d7eb40eb58a85d8ed8c3913807c4ebdc94b22b31466fe0fc0d99",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/fmce.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "67a527af24df2167bb1de08cc7f402b1a2379ee3c1f8fd520b08a17a12a6e826",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/o365.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c752d9e8acf4cee8380fe0c4d5c478bba91b4dda43b5f12cfda645249e6804e2",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/aws.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "88fd22ae5001fef4385016237c70a755ee22a5308d3ce2eed2befb4c2e35d778",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/zoom.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "85de65349948bdc01f1c80862afcb07f17e7425f4cf80341c63e947728e69a37",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/gcp.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "e10368cf90f89a833c48c1d3467214179dedb1d5466c4190514967076feaed5a",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/fmc.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cedd05776fff0e3e46aedf3da4d0fa07af75bfc329931b835cd439d813881a1b",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/azure.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "f13658496a342efdc89b4c22e23e7270797a27bc4b93029657b7d22118bb499a",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/github.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "45a043510e1ac730302f8f126a63ecd59fae16677923c3d3e481d5e40521f5fc",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/docker-compose.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "1fea64105bb5c678b22234c41161046bdb43cd391305c06f26856f2ce7b8d619",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/azure_servicetags.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "d7bb8c3d2f4ea846f066fde37265417c6372ccc66d1ad2ea8e089bd56cf950e7",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/templates/journald.conf.j2",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "01191dd9f858c2ec22f27f68c6a5365a65c331350c10fde35fa0ab7dc31f3375",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "d1e6923a22d4a65623ccfde9cf503bf7a83c309bdf5d2f8cb9f2f788df6ba0ab",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/files",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/files/muster-cli",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a886e3f004250f7d4afa5f80b3229a40fc61e27d035fd43b318f33734ba0779d",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/files/docker-audit.rules",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "234545f58e7b87273db4cbbe9a7b92939b20b8c59969e7be78eaf2709f9c4a88",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/files/docker-daemon.json",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "ee65cb8ce413f20d7dc9a9ff82b6b70aca1c0b379a2492a0cfd1cf308b224446",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "92e07009bb738fcce1eb106da8b6069015eebe814d9fee055554874131b61cec",
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/meta",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/csdac/meta/runtime.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "c03f11d23823bc02cb96a7d367906c9dab8fa9aeba23be4ba0263018359130e5",
+   "format": 1
+  }
+ ],
+ "format": 1
+}

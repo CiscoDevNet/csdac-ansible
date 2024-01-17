@@ -1,0 +1,44 @@
+---
+- set_fact:
+    audit_package_name: audit
+  when: ansible_os_family == 'RedHat'
+
+- set_fact:
+    audit_package_name: auditd
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure auditd is present
+  package:
+    name: "{{ audit_package_name }}"
+    state: present
+    update_cache: yes
+  vars:
+    ansible_python_interpreter: "{{ my_interpreter }}"
+
+- name: start and enable auditd
+  service:
+    name: auditd
+    state: started
+    enabled: yes
+    use: service
+
+- name: place docker rules
+  copy:
+    src: docker-audit.rules
+    dest: /etc/audit/rules.d/docker-audit.rules
+    owner: root
+    group: root
+    mode: 0640
+    force: yes
+  register: dockerrules
+  notify:
+    - run augenrules  
+
+- meta: flush_handlers
+
+- name: restart auditd
+  service:
+    name: auditd
+    state: restarted
+    use: service
+  when: dockerrules.changed

@@ -1,0 +1,20 @@
+---
+
+- name: Install skopeo
+  shell: |
+    echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ UBUNTU_VERSION_ID }}/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+    curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ UBUNTU_VERSION_ID }}/Release.key | apt-key add -
+    apt-get update && apt-get install -y skopeo
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+  when: ansible_os_family == 'Debian'
+
+- name:
+  package:
+    name: "{{ skopeo_package }}"
+    state: present
+  vars:
+    ansible_python_interpreter: "{{ my_interpreter }}"
+  when: ansible_os_family == 'RedHat'

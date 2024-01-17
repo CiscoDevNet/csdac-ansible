@@ -1,0 +1,32 @@
+{
+    "type":"fmce",
+    "label":"Cloud-Delivered Firewall Management Center",
+    "mode":"",
+    "description":"Cloud-Delivered Firewall Management Center Adapter",
+    "docker_image":"public.ecr.aws/e6e4t5f5/muster_fmc_adapter:{{ FMC_ADAPTER_TAG }}",
+    "attributes":[
+        {
+            "name":"fmce_url",
+            "label":"Base Url",
+            "description":"Base Url of Cloud-Delivered FMC",
+            "required":true,
+            "default_value":"",
+            "type":"string",
+            "subtypes": [
+                "url",
+                "fmce_url"
+            ]
+        },
+        {
+            "name":"token",
+            "label":"API Token",
+            "description":"API Token to connect to Cloud-Delivered FMC",
+            "required":true,
+            "default_value":"",
+            "type":"password",
+            "subtypes": [
+                "fmce_token"
+            ]
+        }
+    ]
+}

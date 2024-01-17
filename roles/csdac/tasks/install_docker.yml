@@ -1,0 +1,161 @@
+---
+- name: "Find current user"
+  become: no
+  command: whoami
+  register: whoami
+- set_fact:
+    current_user: "{{ whoami.stdout }}"
+
+- name: Upgrade pip & setuptools
+  pip:
+    executable: pip3
+    name:
+      - pip
+      - setuptools
+    state: latest
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+
+- name: Install packages needed for python
+  pip:
+    executable: pip3
+    name: "{{ PYTHON_PACKAGES }}"
+    state: latest
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+
+- name: Install Docker
+  package:
+    update_cache: "yes"
+    name: ['docker-ce','docker-ce-cli']
+    state: latest
+  vars:
+    ansible_python_interpreter: "{{ my_interpreter }}"
+
+- name: Start Docker service
+  systemd:
+    state: started
+    enabled: true
+    name: docker
+
+- name: Harden Docker daemon configuration
+  copy:
+    src: docker-daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+    force: yes
+    
+- name: Create dir for docker compose
+  file:
+    path: /usr/local/lib/docker/cli-plugins
+    owner: root
+    group: root
+    state: directory
+    
+- name: Install Docker Compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/{{ DOCKER_COMPOSE_VERSION }}/docker-compose-Linux-x86_64
+    dest: "/usr/local/lib/docker/cli-plugins/docker-compose"
+    mode: 0755
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+    
+- name: Delete old docker-compose if exists
+  file:
+    path: "/usr/local/bin/docker-compose"
+    state: absent
+    
+- name: Creating a symlink
+  ansible.builtin.file:
+    src: "/usr/local/lib/docker/cli-plugins/docker-compose"
+    dest: "/usr/local/bin/docker-compose"
+    state: link
+    
+- name: Install Ctop
+  get_url:
+    url: https://github.com/bcicen/ctop/releases/download/v{{ CTOP_VERSION }}/ctop-{{ CTOP_VERSION }}-linux-amd64
+    dest: "/usr/local/bin/ctop"
+    mode: 0755
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+
+- name: Set up proxy configuration for Docker daemon
+  block:
+  - name: Ensure conf dir for daemon is present
+    file:
+      path: /etc/systemd/system/docker.service.d
+      owner: root
+      group: root
+      state: directory
+
+  - name: Change Docker daemon configuration file
+    template:
+      src: docker-daemon-proxy.j2
+      dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+      force: yes
+      owner: root
+      group: root
+      backup: yes
+    register: docker_daemon_config_file
+
+  - name: restart docker service
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: docker
+    when: docker_daemon_config_file.changed
+  when: csdac_role_proxy_enabled | bool
+
+- name: Remove proxy configuration from Docker daemon
+  block:
+  - stat:
+      path: /etc/systemd/system/docker.service.d/http-proxy.conf
+    register: docker_daemon_proxy_conf
+
+  - lineinfile:
+      path: /etc/systemd/system/docker.service.d/http-proxy.conf
+      regexp: "^Environment=\"HTTP_PROXY.*"
+      state: absent
+      backup: yes
+    register: docker_daemon_config_file_1
+    when: docker_daemon_proxy_conf.stat.exists | bool
+  - lineinfile:
+      path: /etc/systemd/system/docker.service.d/http-proxy.conf
+      regexp: "^Environment=\"HTTPS_PROXY.*"
+      state: absent
+      backup: yes
+    register: docker_daemon_config_file_2
+    when: docker_daemon_proxy_conf.stat.exists | bool
+
+  - name: restart docker service
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: docker
+    when: docker_daemon_config_file_1.changed or docker_daemon_config_file_2.changed
+  when: not csdac_role_proxy_enabled | bool
+
+- name: Create docker group
+  group:
+    name: "docker"
+    state: present
+
+- name: Adding user {{ USER }} to docker group  
+  user:
+    name: "{{ current_user }}"
+    groups: "docker"
+    append: "yes"
+
+- name: Assign docker permission to current user
+  shell: "setfacl -m user:{{ current_user }}:rw /var/run/docker.sock"
+
