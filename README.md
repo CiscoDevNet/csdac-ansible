@@ -47,11 +47,30 @@ This repository contains Ansible install scripts for setting up the environment.
 
 By including these checks and validations, the Ansible install scripts provide a more robust and reliable installation experience. They help ensure that all the required resources are accessible and available before proceeding with the installation.
 
+The following FQDNs must be reachable directly or via proxy:
+
+        - https://csdac-cosign.s3.us-west-1.amazonaws.com/
+        - https://public.ecr.aws/
+        - https://github.com/
+        - https://pypi.org/
+        - https://download.docker.com/ (docker apt/yum repo)
+
+***Notably, if you are managing apt/yum repos via centralized management server and do not have direct internet access outside of via proxy, the download of the repo file is handled by proxy, but the repo file that is added to apt/yum expects direct internet access.***
+
+You may choose to handle this repo via centralized management and thus can comment out the "Add Docker Repository" task depending on your OS flavor:
+
+        - ~.ansible/collections/ansible_collections/cisco/csdac/roles/csdac/tasks/setup_RHEL.yml
+        - ~.ansible/collections/ansible_collections/cisco/csdac/roles/csdac/tasks/setup_Ubuntu.yml
+
+Otherwise, you may choose to use your proxy to reach this specific repo. For yum on RHEL this is possible by adding the following to each repo in docker-ce.repo:
+
+        proxy=http://proxy.example.com:3128
+
 If you encounter any issues or have any questions, please feel free to reach out to our support team for assistance.
 
 Thank you for choosing our solution!
 
-## Configuration Guide 
+## Configuration Guide
 
   [CSDAC Configuration Guide]( https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/integrations/dynamic-attributes-connector/220/cisco-secure-dynamic-attributes-connector-v220.html )
 

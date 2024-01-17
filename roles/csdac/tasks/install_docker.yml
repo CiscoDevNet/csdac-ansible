@@ -13,12 +13,20 @@
       - pip
       - setuptools
     state: latest
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
 
 - name: Install packages needed for python
   pip:
     executable: pip3
     name: "{{ PYTHON_PACKAGES }}"
     state: latest
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
 
 - name: Install Docker
   package:
@@ -79,6 +87,7 @@
   environment:
     http_proxy: "{{csdac_role_http_proxy_url}}"
     https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
 
 - name: Set up proxy configuration for Docker daemon
   block:

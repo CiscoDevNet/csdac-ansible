@@ -97,6 +97,26 @@
     https_proxy: "{{csdac_role_https_proxy_url}}"
     no_proxy: "{{ csdac_role_no_proxy }}"
 
+- name: Verify internet connectivity https://pypi.org/
+  uri:
+    url: https://pypi.org/
+  register: pypi_response
+  ignore_errors: true
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+
+- name: Verify internet connectivity https://download.docker.com/
+  uri:
+    url: https://download.docker.com/
+  register: download_docker_response
+  ignore_errors: true
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+
 - name: Verify internet connectivity
   fail:
       msg: |
@@ -104,5 +124,7 @@
         - https://csdac-cosign.s3.us-west-1.amazonaws.com/
         - https://public.ecr.aws/
         - https://github.com/
+        - https://pypi.org/
+        - https://download.docker.com/
         If this host is behind a firewall, make sure there are rules that allow communication; if you have a proxy, make sure it is configured to allow access.
-  when: s3_response.status != 200 or ecr_response.status != 200 or gh_response.status != 200
+  when: s3_response.status != 200 or ecr_response.status != 200 or gh_response.status != 200 or pypi_response.status != 200 or download_docker_response.status != 200
