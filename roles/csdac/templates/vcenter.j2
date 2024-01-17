@@ -1,0 +1,94 @@
+{
+    "type":"vcenter",
+    "label":"vCenter",
+    "mode":"attr-list",
+    "description":"VMWare vCenter Connector",
+    "docker_image":"public.ecr.aws/e6e4t5f5/muster_vcenter_connector:{{ VCENTER_CONNECTOR_TAG }}",
+    "attributes":[
+        {
+            "name":"pull_interval",
+            "label":"Pull Interval (sec)",
+            "description":"Time interval in seconds between data pulls",
+            "required":true,
+            "default_value":"30",
+            "type":"int"
+        },
+        {
+            "name":"host",
+            "label":"Host",
+            "description":"Host of vCenter",
+            "required":true,
+            "default_value":"",
+            "type":"string",
+            "subtypes": [
+                "host"
+            ]
+        },
+        {
+            "name":"user",
+            "label":"User",
+            "description":"Username to connect to vCenter",
+            "required":true,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"password",
+            "label":"Password",
+            "description":"Password to connect to vCenter",
+            "required":true,
+            "default_value":"",
+            "type":"password"
+        },
+        {
+            "name":"nsxip",
+            "label":"NSX IP",
+            "description":"IP of NSX",
+            "required":false,
+            "default_value":"",
+            "type":"string",
+            "subtypes": [
+                "host"
+            ]
+        },
+        {
+            "name":"nsxuser",
+            "label":"NSX User",
+            "description":"Username to connect to NSX",
+            "required":false,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"nsxtype",
+            "label":"NSX Type",
+            "description":"NSX Type",
+            "required":false,
+            "default_value":"",
+            "type":"select",
+            "select_options":{
+                "NSX-T":"NSX-T",
+                "NSX-V":"NSX-V"
+            }
+        },
+        {
+            "name":"nsxpass",
+            "label":"NSX Password",
+            "description":"Password to connect to NSX",
+            "required":false,
+            "default_value":"",
+            "type":"password"
+        },
+        {
+            "name":"ca_bundle",
+            "label":"vCenter Certificate",
+            "description":"CA Bundle used to validate vCenter certificates",
+            "required":true,
+            "default_value":"",
+            "type":"text",
+            "subtypes": [
+                "ca_bundle"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,25 @@
+{
+    "type": "webex",
+    "label": "Webex",
+    "mode": "dyn-obj",
+    "description": "Webex Connector",
+    "docker_image": "public.ecr.aws/e6e4t5f5/muster_webex_connector:{{ WEBEX_CONNECTOR_TAG }}",
+    "attributes": [
+        {
+            "name": "pull_interval",
+            "label": "Pull Interval (sec)",
+            "description": "Time interval in seconds between data pulls",
+            "required": true,
+            "default_value": "30",
+            "type": "int"
+        },
+        {
+            "name": "provider_reserved",
+            "label": "Provider Reserved IPs",
+            "description": "Include provider reserved IPs",
+            "required": true,
+            "default_value": "false",
+            "type": "bool"
+        }
+    ]
+}

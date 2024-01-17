@@ -1,0 +1,8 @@
+---
+- name: check the user
+  command: whoami
+  register: current_user
+
+- name: print user
+  debug:
+    msg: "{{ ansible_env }}"

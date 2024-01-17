@@ -1,0 +1,49 @@
+{
+    "type":"azure",
+    "label":"Azure",
+    "mode":"attr-list",
+    "description":"Microsoft Azure Connector",
+    "docker_image":"public.ecr.aws/e6e4t5f5/muster_azure_connector:{{ AZURE_CONNECTOR_TAG }}",
+    "attributes":[
+        {
+            "name":"pull_interval",
+            "label":"Pull Interval (sec)",
+            "description":"Time interval in seconds between data pulls",
+            "required":true,
+            "default_value":"30",
+            "type":"int"
+        },
+        {
+            "name":"subscription_id",
+            "label":"Subscription Id",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"tenant_id",
+            "label":"Tenant Id",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"client_id",
+            "label":"Client Id",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"client_secret",
+            "label":"Client Secret",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"password"
+        }
+    ]
+}

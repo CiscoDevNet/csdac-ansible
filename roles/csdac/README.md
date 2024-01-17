@@ -5,7 +5,7 @@ This README outlines instructions on how to install Cisco Secure Dynamic Attribu
 
 **Installation**
 
-Follow instructions outlined at [Cisco Secure Dynamic Attributes Connector Configuration Guide 2.3](https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/integrations/dynamic-attributes-connector/230/cisco-secure-dynamic-attributes-connector-v230.html )
+Follow instructions outlined at [Cisco Secure Dynamic Attributes Connector Configuration Guide 2.0](https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/integrations/dynamic-attributes-connector/200/cisco-secure-dynamic-attributes-connector-v200.html )
 
 **Example Installation**
 
@@ -35,25 +35,11 @@ Once ansible installs CSDAC application successfully, user will see the followin
 00:35:17 TASK [csdac : Post task] *******************************************************00:35:17 ok: [10.10.10.15] => {00:35:17    
 "msg": "Please login in to https://<ip address> to configure csdac application."00:35:17 }00:35:17
 ```
-## Ansible Install Scripts
 
-This repository contains Ansible install scripts for setting up the environment. The scripts have been improved to include the following checks and validations:
-
-**Reachability of ECR/S3 Buckets**: The install scripts now include checks to ensure the reachability of the ECR (Elastic Container Registry) and S3 buckets. This ensures that the necessary Docker images and files can be accessed and downloaded during the installation process.
-
-**Disk Space Check for Install**: Before proceeding with the installation, the scripts perform a disk space check to ensure that sufficient disk space is available. The minimum disk space required for a successful installation is 100GB. This check helps prevent installation failures due to insufficient storage capacity.
-
-**Network Connectivity for Package and Image Downloads**: The scripts validate the network connectivity to download the required packages and Docker images. This ensures that the installation process can smoothly retrieve the necessary dependencies from the internet.
-
-By including these checks and validations, the Ansible install scripts provide a more robust and reliable installation experience. They help ensure that all the required resources are accessible and available before proceeding with the installation.
-
-If you encounter any issues or have any questions, please feel free to reach out to our support team for assistance.
-
-Thank you for choosing our solution!
 
 ## Configuration Guide 
 
-  [CSDAC Configuration Guide]( https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/integrations/dynamic-attributes-connector/220/cisco-secure-dynamic-attributes-connector-v220.html )
+  [CSDAC Configuration Guide](https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/integrations/dynamic-attributes-connector/200/cisco-secure-dynamic-attributes-connector-v200.html )
 
  
 ## Ansible collection

@@ -1,0 +1,17 @@
+{
+    "type": "zoom",
+    "label": "Zoom",
+    "mode": "dyn-obj",
+    "description": "Zoom Connector",
+    "docker_image": "public.ecr.aws/e6e4t5f5/muster_zoom_connector:{{ ZOOM_CONNECTOR_TAG }}",
+    "attributes": [
+        {
+        "name": "pull_interval",
+        "label": "Pull Interval (sec)",
+        "description": "Time interval in seconds between data pulls",
+        "required": true,
+        "default_value": "30",
+        "type": "int"
+        }
+    ]
+}

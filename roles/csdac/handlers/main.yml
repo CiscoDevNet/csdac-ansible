@@ -1,0 +1,9 @@
+---
+# handlers file for muster-ansible
+- name: restart journald
+  service:
+    name: systemd-journald
+    state: restarted
+
+- name: run augenrules
+  shell: augenrules

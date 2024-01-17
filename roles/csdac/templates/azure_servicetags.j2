@@ -1,0 +1,64 @@
+{
+    "type":"azure-servicetags",
+    "label":"Azure Service Tags",
+    "mode":"dyn-obj",
+    "description":"Microsoft Azure Service Tags Connector",
+    "docker_image":"public.ecr.aws/e6e4t5f5/muster_azure_servicetags:{{ AZURE_SERVICE_TAGS_CONNECTOR_TAG }}",
+    "attributes":[
+        {
+            "name":"pull_interval",
+            "label":"Pull interval (sec)",
+            "description":"Time interval in seconds between data pulls",
+            "required":false,
+            "default_value":"30",
+            "type":"int"
+        },
+        {
+            "name":"location",
+            "label":"Location",
+            "description":"",
+            "required":true,
+            "default_value":"eastus",
+            "type":"select",
+            "select_options":{
+                "eastus":"eastus",
+                "eastus2":"eastus2",
+                "westus":"westus",
+                "northcentralus":"northcentralus",
+                "southcentralus":"southcentralus"
+            }
+        },
+        {
+            "name":"subscription_id",
+            "label":"Subscription Id",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"tenant_id",
+            "label":"Tenant Id",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"client_id",
+            "label":"Client Id",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"string"
+        },
+        {
+            "name":"client_secret",
+            "label":"Client Secret",
+            "description":"",
+            "required":true,
+            "default_value":"",
+            "type":"password"
+        }
+    ]
+}

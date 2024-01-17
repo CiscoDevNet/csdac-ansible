@@ -1,0 +1,38 @@
+{
+ "collection_info": {
+  "namespace": "cisco",
+  "name": "csdac",
+  "version": "2.3.0",
+  "authors": [
+   "Gogulakrishnan Thiyagarajan (@gothiyag) <gothiyag.com>",
+   "Anton Makovetskyi  (@anmakove) <anmakove@cisco.com>"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "cisco",
+   "fmc",
+   "firepower",
+   "csdac",
+   "identity"
+  ],
+  "description": "Ansible Role for installing CSDAC application",
+  "license": [],
+  "license_file": "LICENSE",
+  "dependencies": {
+   "community.crypto": "*",
+   "community.general": "*"
+  },
+  "repository": "https://github.com/CiscoDevNet/csdac-ansible",
+  "documentation": "https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/integrations/dynamic-attributes-connector/230/cisco-secure-dynamic-attributes-connector-v230.html",
+  "homepage": "https://youtu.be/5hVAmh7E0gU",
+  "issues": null
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "e649763dc65dcb00995888474f667e455366c245bc7159075a11b36eb22a1582",
+  "format": 1
+ },
+ "format": 1
+}

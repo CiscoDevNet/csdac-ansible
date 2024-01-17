@@ -1,0 +1,7 @@
+{
+  "userns-remap": "",
+  "icc": false,
+  "userland-proxy": false,
+  "iptables": true,
+  "live-restore": true
+}

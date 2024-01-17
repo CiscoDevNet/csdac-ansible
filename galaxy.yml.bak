@@ -1,0 +1,35 @@
+---
+namespace: cisco
+name: csdac
+# The version of the collection. Must be compatible with semantic versioning
+version: 2.3.2
+readme: README.md
+authors:
+ - Gogulakrishnan Thiyagarajan (@gothiyag) <gothiyag.com>
+ - Anton Makovetskyi  (@anmakove) <anmakove@cisco.com>
+description: Ansible Role for installing CSDAC application
+license_file: 'LICENSE'
+tags: 
+ - cisco
+ - fmc
+ - firepower
+ - csdac
+ - identity
+dependencies:
+ "community.crypto": "*"
+ "community.general": "*"
+repository: https://github.com/CiscoDevNet/csdac-ansible
+documentation: https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/integrations/dynamic-attributes-connector/230/cisco-secure-dynamic-attributes-connector-v230.html
+homepage: https://youtu.be/5hVAmh7E0gU
+#issues: https://github.com/CiscoDevNet/csdac-ansible/issues
+build_ignore:
+ - playbook.yml
+ - muster-docker
+ - molecule
+ - tests
+ - .git
+ - .gitmodules
+ - hosts
+ - .yamllint
+ - Jenkinsfile
+ - Jenkinsfile.auto

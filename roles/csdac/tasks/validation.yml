@@ -1,0 +1,108 @@
+# This task will validate all the required variables
+
+- name: "fail when the proxy is enabled but proxy configuration is not defined"
+  fail:
+   msg: "the 'csdac_proxy_enabled' variable is set to 'true' but 'csdac_http_proxy_url' is undefined"
+  when: csdac_role_proxy_enabled | bool and csdac_role_http_proxy_url | length == 0
+
+- name: "fail when the proxy is enabled but proxy configuration is not defined"
+  fail:
+   msg: "the 'csdac_proxy_enabled' variable is set to 'true' but 'csdac_https_proxy_url' is undefined"
+  when: csdac_role_proxy_enabled | bool and csdac_role_https_proxy_url | length == 0
+
+- name: "Verify supported operating system"
+  fail:
+   msg: | 
+    The current operating system is not supported. 
+    Use one of the supported operating system mentioned in documentation 
+    https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/integrations/dynamic-attributes-connector/200/cisco-secure-dynamic-attributes-connector-v200/install-the-cisco-secure-dynamic-attributes-connector.html
+  when: ansible_os_family not in ['RedHat', 'Debian', 'Darwin']
+
+- name: "Find current user"
+  set_fact:
+    current_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+
+- name: Find user home directory
+  shell: >
+    getent passwd {{ ansible_env.SUDO_USER | default(ansible_user_id) }} | cut -d: -f6
+  changed_when: false
+  register: home_directory
+
+- name: Variable for CSDAC directory
+  set_fact:
+    CSDAC_DIR: "{{ home_directory.stdout }}/csdac/app"
+
+- name: check if CSDAC installed 
+  stat:
+    path: "{{ CSDAC_DIR }}/muster-cli"
+  register: csdac
+
+- name: Set a constant defining number of Bytes in 1 GB
+  set_fact:
+    const_bytes_in_gb: 1073741824
+
+- name: Verify required disk space in /var (if it exists)
+  fail:
+    msg: |
+      There is insufficient available disk space in /var to install the Cisco Dynamic Attributes Connector.
+      Available disk space{{ ":" }} {{ (item.size_available|int / const_bytes_in_gb|int)|round(1) }} GB
+      Required disk space{{ ":" }} 100 GB
+      Clean some disk space to install the application.
+  with_items: "{{ ansible_mounts }}"
+  when: item.mount == '/var' and not csdac.stat.exists| bool 
+  failed_when: 100|int * const_bytes_in_gb|int >= item.size_available|int
+  # Notify the next task that we've checked /var (and that it exists)
+  changed_when: True
+  register: previous
+
+- name: Verify required disk space in root
+  fail:
+    msg: |
+      There is insufficient available disk space to install the Cisco Dynamic Attributes Connector.
+      Available disk space{{ ":" }} {{ (item.size_available|int / const_bytes_in_gb|int)|round(1) }} GB
+      Required disk space{{ ":" }} 100 GB
+      Clean some disk space to install the application.
+  with_items: "{{ ansible_mounts }}"
+  # Only run this when /var doesn't exist
+  when: not previous.changed and '/' == item.mount and not csdac.stat.exists| bool
+  failed_when: 100|int * const_bytes_in_gb|int >= item.size_available|int
+
+- name: Verify internet connectivity https://csdac-cosign.s3.us-west-1.amazonaws.com/
+  uri:
+    url: https://csdac-cosign.s3.us-west-1.amazonaws.com/
+  register: s3_response
+  ignore_errors: true
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+
+- name: Verify internet connectivity https://public.ecr.aws/
+  uri:
+    url: https://public.ecr.aws/
+  register: ecr_response
+  ignore_errors: true
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+
+- name: Verify internet connectivity https://github.com/
+  uri:
+    url: https://github.com/
+  register: gh_response
+  ignore_errors: true
+  environment:
+    http_proxy: "{{csdac_role_http_proxy_url}}"
+    https_proxy: "{{csdac_role_https_proxy_url}}"
+    no_proxy: "{{ csdac_role_no_proxy }}"
+
+- name: Verify internet connectivity
+  fail:
+      msg: |
+        Make sure all of the following hosts are reachable from this host{{ ":" }}
+        - https://csdac-cosign.s3.us-west-1.amazonaws.com/
+        - https://public.ecr.aws/
+        - https://github.com/
+        If this host is behind a firewall, make sure there are rules that allow communication; if you have a proxy, make sure it is configured to allow access.
+  when: s3_response.status != 200 or ecr_response.status != 200 or gh_response.status != 200

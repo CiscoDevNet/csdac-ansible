@@ -1,0 +1,278 @@
+---
+- name: install dependencies for csdac
+  package:
+    name: ['jq', 'openssl']
+    state: present
+    update_cache: yes
+  vars:
+    ansible_python_interpreter: "{{ my_interpreter }}"
+
+- name: "Find current user"
+  set_fact:
+    current_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+
+- name: Find user home directory
+  shell: >
+    getent passwd {{ ansible_env.SUDO_USER | default(ansible_user_id) }} | cut -d: -f6
+  changed_when: false
+  register: home_directory
+
+- name: Variable for CSDAC directory
+  set_fact:
+    CSDAC_DIR: "{{ home_directory.stdout }}/csdac/app"
+
+- name: Create directory structure in csdac vm
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+    owner: "{{ current_user }}"
+    group: "{{ current_user }}"
+  with_items:
+    - "{{ CSDAC_DIR }}/config/connectors"
+    - "{{ CSDAC_DIR }}/config/adapters"
+    - "{{ CSDAC_DIR }}/config/certs"
+
+- name: check if key exists
+  stat:
+    path: "{{ CSDAC_DIR }}/config/certs/key.pem"
+  register: check_key
+
+- name: check if cert exists
+  stat:
+    path: "{{ CSDAC_DIR }}/config/certs/cert.crt"
+  register: check_cert
+
+- name: Verifying if certs exists
+  block:
+  - name: Generate OpenSSL key
+    openssl_privatekey:
+      path: "{{ CSDAC_DIR }}/config/certs/key.pem"
+      size: 4096
+      force: True
+
+  - name: Generate OpenSSL CSR
+    openssl_csr:
+      path: "{{ CSDAC_DIR }}/config/certs/cert.csr"
+      privatekey_path: "{{ CSDAC_DIR }}/config/certs/key.pem"
+      country_name: "{{ csdac_role_certificate_country_name }}"
+      organization_name: "{{ csdac_role_certificate_organization_name }}"
+      organizational_unit_name: "{{ csdac_role_certificate_organization_unit_name }}"
+      common_name: "{{ csdac_role_certificate_domain }}"
+
+  - name: Generate a Self Signed OpenSSL certificate
+    openssl_certificate:
+      path: "{{ CSDAC_DIR }}/config/certs/cert.crt"
+      privatekey_path: "{{ CSDAC_DIR }}/config/certs/key.pem"
+      csr_path: "{{ CSDAC_DIR }}/config/certs/cert.csr"
+      provider: selfsigned
+
+  when: check_key.stat.exists == False or check_cert.stat.exists == False
+
+- name: Change owner for certs directory
+  file:
+    path: "{{ CSDAC_DIR }}/config/certs"
+    state: directory
+    owner: '1001'
+    recurse: yes
+
+- name: Configure docker compose template and copy to csdac vm
+  template:
+    src:  docker-compose.j2
+    dest: "{{ CSDAC_DIR }}/docker-compose.yml"
+
+- name: Change the permission of docker compose file
+  file:
+    path: "{{ CSDAC_DIR }}/docker-compose.yml"
+    owner: "{{ current_user }}"
+    group: "{{ current_user }}"
+    mode: 0777
+
+- name: Copy csdac command line file to application folder
+  copy:
+    src: "{{ role_path }}/files/muster-cli"
+    dest: "{{ CSDAC_DIR }}/muster-cli"
+    owner: "{{ current_user }}"
+    group: "{{ current_user }}"
+    mode: 0777
+
+- name: Copy connectors template from local to csdac VM
+  template:
+    src: "{{ item }}"
+    dest: "{{ CSDAC_DIR }}/config/connectors/{{ item | basename | replace('j2','json')}}"
+  with_items:
+     - "aws.j2"
+     - "azure.j2"
+     - "azure_servicetags.j2"
+     - "o365.j2"
+     - "vcenter.j2"
+     - "gcp.j2"
+     - "github.j2"
+     - "webex.j2"
+     - "zoom.j2"
+  become: yes
+  become_user: "{{ current_user }}"
+
+- name: Copy adapters template from local to csdac VM
+  template:
+    src: "{{ item }}"
+    dest: "{{ CSDAC_DIR }}/config/adapters/{{ item | basename | replace('j2','json')}}"
+  with_items:
+     - "fmc.j2"
+     - "fmce.j2"
+  become: yes
+  become_user: "{{ current_user }}"
+
+- name: Check if docker client config folder exists
+  stat:
+    path: "{{ home_directory.stdout }}/.docker"
+  register: docker_client_config_folder
+
+- name: Check if docker client config file exists
+  stat:
+    path: "{{ home_directory.stdout }}/.docker/config.json"
+  register: docker_client_config
+
+- name: Create Docker client config folder and Docker client config file
+  block:
+  - file:
+      path: "{{ home_directory.stdout }}/.docker"
+      state: directory
+  - copy:
+      content: '{}'
+      dest: "{{ home_directory.stdout }}/.docker/config.json"
+  when: not docker_client_config_folder.stat.exists| bool or not docker_client_config.stat.exists| bool
+
+- name: Docker client set up proxy configuration
+  block:
+  - name: load current Docker client configuration
+    slurp:
+      src: "{{ home_directory.stdout }}/.docker/config.json"
+    register: current_docker_cli_config
+
+  - set_fact:
+      current_docker_cli_config_json: "{{ current_docker_cli_config.content|b64decode|from_json }}"
+
+  - debug:
+      var: current_docker_cli_config_json
+ 
+  - set_fact:
+      http_proxy_append:
+        proxies:
+          default:
+            httpProxy: "{{ csdac_role_http_proxy_url }}"
+    when: csdac_role_http_proxy_url != ''
+  - set_fact:
+      https_proxy_append:
+        proxies:
+          default:
+            httpsProxy: "{{ csdac_role_https_proxy_url }}"
+    when: csdac_role_https_proxy_url != ''
+  - set_fact:
+      no_proxy_append:
+        proxies:
+          default:
+            noProxy: "{{ csdac_role_no_proxy }},localhost,127.0.0.0/8"
+    when: csdac_role_no_proxy != ''
+  - set_fact:
+      no_proxy_append:
+        proxies:
+          default:
+            noProxy: "localhost,127.0.0.0/8"
+    when: csdac_role_no_proxy == ''
+  
+  - name: append proxy configuration to the current config
+    set_fact:
+      new_docker_cli_config: "{{ current_docker_cli_config_json | default({}) | combine({
+        'proxies': {
+          'default': http_proxy_append.proxies.default | combine(https_proxy_append.proxies.default) | combine(no_proxy_append.proxies.default)
+          }
+        }) }}" 
+
+  - debug:
+      var: new_docker_cli_config
+
+  - name: Write new config into file
+    copy:
+      content: "{{ new_docker_cli_config | to_nice_json }}"
+      dest: "{{ home_directory.stdout }}/.docker/config.json"
+  when: csdac_role_proxy_enabled | bool
+
+- name: Docker client remove proxy configuration
+  block:
+  - name: load current Docker client configuration
+    slurp:
+      src: "{{ home_directory.stdout }}/.docker/config.json"
+    register: current_docker_cli_config
+
+  - set_fact:
+      current_docker_cli_config_json: "{{ current_docker_cli_config.content|b64decode|from_json }}"
+
+  - debug:
+      var: current_docker_cli_config_json
+
+  - name: Remove proxy configuration from the current config
+    set_fact:
+      new_docker_cli_config: "{{ current_docker_cli_config_json | default([]) | dict2items | rejectattr('key', 'match', 'proxies') | list | items2dict }}"
+
+  - debug:
+      var: new_docker_cli_config
+
+  - name: Write current config into file
+    copy:
+      content: "{{ new_docker_cli_config | to_nice_json }}"
+      dest: "{{ home_directory.stdout }}/.docker/config.json"
+  when: not csdac_role_proxy_enabled | bool
+
+- name: Change the permission of docker config json
+  file:
+    path: "{{ home_directory.stdout }}/.docker"
+    state: directory
+    owner: "{{ current_user }}"
+    group: "{{ current_user }}"
+    recurse: yes
+    mode: 0755
+
+- name: Stop csdac application using docker compose
+  command: bash 'muster-cli' stop
+  args:
+    chdir: "{{ CSDAC_DIR }}"
+  become: yes
+  become_user: "{{ current_user }}"
+
+- name: Remove old muster containers and images
+  shell: |
+    docker rm $(docker ps -a | grep muster | awk '{print $1}') -f
+    oldimage=`docker images | grep 'muster' | awk '{print $3}'`
+    if [ -z "$oldimage" ]
+    then
+    echo "There is no old muster docker images found!"
+    else
+    echo "Removing old muster docker images..."
+    docker rmi ${oldimage} -f
+    fi
+  ignore_errors: yes
+  become: true
+
+- name: Start csdac application using docker compose
+  command: bash 'muster-cli' start
+  args:
+    chdir: "{{ CSDAC_DIR }}"
+  become: yes
+  become_user: "{{ current_user }}"
+  register: muster_cli_start_result
+
+- name: print result of csdac command line start command (stdout)
+  debug: var=muster_cli_start_result.stdout_lines
+
+- name: print result of csdac command line start command (stderr)
+  debug: var=muster_cli_start_result.stderr_lines
+
+- include_tasks: check_muster_installation.yml
+  with_items: "{{ MUSTER_CORE_SERVICES }}"
+  loop_control:
+    loop_var: container
+
+- name: Post task
+  debug:
+    msg: "Please login in to https://{{ ansible_default_ipv4 is defined and ansible_default_ipv4.address or ansible_all_ipv4_addresses[0] }} to configure csdac application"
